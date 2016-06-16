@@ -3,7 +3,6 @@
 <head>
 	<title>demo</title>
 	<style type="text/css">
-		* {margin: 0;padding:0;}
     div{
       margin-top: 20px;
     }
@@ -29,14 +28,14 @@
     context.strokeStyle = '#fcc700';
   }
 
+  //队列
   var queueArr = [];
   function queue(item){
     queueArr.push(item);
   }
   function dequeue(){
     if(queueArr.length > 0){
-      var fuc = queueArr.shift();
-      fuc();
+      queueArr.shift()();
     }
   }
   (function addQueue(){
@@ -47,7 +46,7 @@
     queue(function(){line.moveToRight(800)});
   }());
 
-  /* x:16 y:9 */
+  /* step：x:16 y:9 */
   var line = {
     startX: 568,
     startY: 0,
@@ -110,7 +109,6 @@
     drawAnimat: function(type,position){
       var self = this;
       self.draw();
-      ball.count++;
 
       var interval = setInterval(function(){
         var rectX = self.x - self.radius,
@@ -133,15 +131,16 @@
           }
           dequeue();
         }    
-      },20)
+      },20);
+      
     }
   }
 
-  function drawLine(){
+  function draw(){
     dequeue();
   }
 
-  drawLine();
+  draw();
 
   </script>
 </body>
