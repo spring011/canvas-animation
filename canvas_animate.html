@@ -29,6 +29,24 @@
     context.strokeStyle = '#fcc700';
   }
 
+  var queueArr = [];
+  function queue(item){
+    queueArr.push(item);
+  }
+  function dequeue(){
+    if(queueArr.length > 0){
+      var fuc = queueArr.shift();
+      fuc();
+    }
+  }
+  (function addQueue(){
+    queue(function(){line.moveToRight(900);});
+    queue(function(){line.moveToLeft(178);});
+    queue(function(){line.moveToRight(800);});
+    queue(function(){line.moveToLeft(178);});
+    queue(function(){line.moveToRight(800)});
+  }());
+
   /* x:16 y:9 */
   var line = {
     startX: 568,
@@ -79,7 +97,6 @@
     vd: 2,//速率
     radius: 1,
     color: 'rgba(252,199,0,1)',
-    count: 0,
     init: function(){
       this.radius = 1;
     },
@@ -111,20 +128,17 @@
 
         if(self.radius >= 11){
           clearInterval(interval);
-            if(ball.count <= 4){
-              if(type === 'right'){
-                line.moveToLeft(178);
-              }else if(type === 'left'){
-                line.moveToRight(800);
-              }
-            }
+          if(queueArr.length == 0){
+            return;
+          }
+          dequeue();
         }    
       },20)
     }
   }
 
   function drawLine(){
-    line.moveToRight(900);
+    dequeue();
   }
 
   drawLine();
