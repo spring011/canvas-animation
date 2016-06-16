@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>demo</title>
+	<style type="text/css">
+		* {margin: 0;padding:0;}
+    div{
+      margin-top: 20px;
+    }
+	</style>
+
+</head>
+<body>
+<div>
+  <canvas width="2000" height="3000" id="myCanvas">
+  </canvas>
+</div>
+
+<script>
+
+  /**
+  **canvas动态画线和球
+  **/
+  var canvas = document.getElementById('myCanvas');
+  if (canvas.getContext){
+    var context = canvas.getContext('2d');
+    
+    context.lineWidth = 1;
+    context.strokeStyle = '#fcc700';
+  }
+
+  /* x:16 y:9 */
+  var line = {
+    startX: 568,
+    startY: 0,
+    perX: 16,
+    perY: 9,
+    interTime: 10,
+    moveToRight: function(endX){
+      var self = this;
+      var interval = setInterval(function(){
+        self.drawPartLine(self.startX,self.startY,self.startX + self.perX,self.startY + self.perY);
+        self.startX = self.startX + self.perX;
+        self.startY = self.startY + self.perY;
+        if(self.startX >= endX){
+          clearInterval(interval);
+            ball.init();
+            ball.x = self.startX;
+            ball.y = self.startY;
+            ball.drawAnimat('right');
+        }
+      },self.interTime)
+    },
+    moveToLeft: function(endX){
+      var self = this;
+      var interval = setInterval(function(){
+        self.drawPartLine(self.startX,self.startY,self.startX - self.perX,self.startY + self.perY);
+        self.startX = self.startX - self.perX;
+        self.startY = self.startY + self.perY;
+        if(self.startX <= endX){
+          clearInterval(interval);
+          ball.init();
+          ball.x = self.startX;
+          ball.y = self.startY;
+          ball.drawAnimat('left');
+        }
+      },self.interTime)
+    },
+    drawPartLine: function(startX,startY,endX,endY){
+      context.beginPath();
+      context.moveTo(startX,startY);
+      context.lineTo(endX,endY);
+      context.stroke();
+    }
+  }
+  var ball = {
+    x: 200,
+    y: 200,
+    vd: 2,//速率
+    radius: 1,
+    color: 'rgba(252,199,0,1)',
+    count: 0,
+    init: function(){
+      this.radius = 1;
+    },
+    draw: function(){
+      context.beginPath();
+      context.arc(this.x,this.y,this.radius,0,Math.PI*2,true);
+      context.closePath();
+      context.fillStyle = this.color;
+      context.fill();
+    },
+    drawAnimat: function(type,position){
+      var self = this;
+      self.draw();
+      ball.count++;
+
+      var interval = setInterval(function(){
+        var rectX = self.x - self.radius,
+            rectY = self.y - self.radius;
+        context.clearRect(rectX,rectY,2*self.radius,2*self.radius);
+        self.radius = self.radius + 2;
+        
+        if(type === 'right'){
+          self.x = self.x - 1;
+        }else{
+          self.x = self.x + 1;
+        }
+        
+        self.draw();
+
+        if(self.radius >= 11){
+          clearInterval(interval);
+            if(ball.count <= 4){
+              if(type === 'right'){
+                line.moveToLeft(178);
+              }else if(type === 'left'){
+                line.moveToRight(800);
+              }
+            }
+        }    
+      },20)
+    }
+  }
+
+  function drawLine(){
+    line.moveToRight(900);
+  }
+
+  drawLine();
+
+  </script>
+</body>
+</html>
